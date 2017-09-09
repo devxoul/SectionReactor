@@ -1,5 +1,10 @@
 # SectionReactor
 
+![Swift](https://img.shields.io/badge/Swift-3.1-orange.svg)
+[![CocoaPods](http://img.shields.io/cocoapods/v/SectionReactor.svg)](https://cocoapods.org/pods/SectionReactor)
+[![Build Status](https://travis-ci.org/devxoul/SectionReactor.svg?branch=master)](https://travis-ci.org/devxoul/SectionReactor)
+[![Codecov](https://img.shields.io/codecov/c/github/devxoul/SectionReactor.svg)](https://codecov.io/gh/devxoul/SectionReactor)
+
 SectionReactor is a ReactorKit extension for managing table view and collection view sections with RxDataSources.
 
 ## Getting Started
@@ -50,6 +55,17 @@ final class ArticleListViewReactor: Reactor {
     ])
   }
 }
+```
+
+## Dependencies
+
+* [ReactorKit](https://github.com/ReactorKit/ReactorKit) >= 0
+* [RxDataSources](https://github.com/RxSwiftCommunity/RxDataSources) >= 2.0
+
+## Installation
+
+```ruby
+pod 'SectionReactor'
 ```
 
 ## License
