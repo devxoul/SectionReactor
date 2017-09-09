@@ -9,7 +9,7 @@ SectionReactor is a ReactorKit extension for managing table view and collection 
 
 ## Getting Started
 
-This is a draft. I have no idea how would I explain this concept 🤦‍♂️ It would be better to see the [ArticleFeede](https://github.com/devxoul/SectionReactor/tree/master/Examples/ArticleFeed) example.
+This is a draft. I have no idea how would I explain this concept 🤦‍♂️ It would be better to see the [ArticleFeed](https://github.com/devxoul/SectionReactor/tree/master/Examples/ArticleFeed) example.
 
 **ArticleViewSection.swift**
 
