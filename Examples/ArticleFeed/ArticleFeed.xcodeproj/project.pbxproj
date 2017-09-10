@@ -35,6 +35,7 @@
 		031254681F639C3500953F94 /* ArticleCardTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312544A1F639C3500953F94 /* ArticleCardTextCell.swift */; };
 		031254691F639C3500953F94 /* ArticleCardTextCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312544B1F639C3500953F94 /* ArticleCardTextCellReactor.swift */; };
 		0312546C1F639D8400953F94 /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312546B1F639D8400953F94 /* CompositionRoot.swift */; };
+		037E406F1F6450D70005A54E /* ArticleSectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037E406E1F6450D70005A54E /* ArticleSectionDelegate.swift */; };
 		F2A46C59D3F8EC92AFBD04D5 /* Pods_ArticleFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6ED26994F9A3571B8C6B252 /* Pods_ArticleFeed.framework */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,7 @@
 		0312544B1F639C3500953F94 /* ArticleCardTextCellReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCardTextCellReactor.swift; sourceTree = "<group>"; };
 		0312544D1F639C3500953F94 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0312546B1F639D8400953F94 /* CompositionRoot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
+		037E406E1F6450D70005A54E /* ArticleSectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleSectionDelegate.swift; sourceTree = "<group>"; };
 		1459E30ECC2A914DBEE8DB4E /* Pods-ArticleFeed.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ArticleFeed.release.xcconfig"; path = "Pods/Target Support Files/Pods-ArticleFeed/Pods-ArticleFeed.release.xcconfig"; sourceTree = "<group>"; };
 		C6ED26994F9A3571B8C6B252 /* Pods_ArticleFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ArticleFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEC6C51D2B65CE2F484BF318 /* Pods-ArticleFeed.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ArticleFeed.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ArticleFeed/Pods-ArticleFeed.debug.xcconfig"; sourceTree = "<group>"; };
@@ -162,8 +164,9 @@
 			isa = PBXGroup;
 			children = (
 				031254351F639C3500953F94 /* FeedViewSection.swift */,
-				031254361F639C3500953F94 /* ArticleSectionReactor.swift */,
 				031254371F639C3500953F94 /* ArticleViewSetion.swift */,
+				031254361F639C3500953F94 /* ArticleSectionReactor.swift */,
+				037E406E1F6450D70005A54E /* ArticleSectionDelegate.swift */,
 			);
 			path = Sections;
 			sourceTree = "<group>";
@@ -418,6 +421,7 @@
 				0312545D1F639C3500953F94 /* ArticleListViewController.swift in Sources */,
 				031254681F639C3500953F94 /* ArticleCardTextCell.swift in Sources */,
 				0312546C1F639D8400953F94 /* CompositionRoot.swift in Sources */,
+				037E406F1F6450D70005A54E /* ArticleSectionDelegate.swift in Sources */,
 				031254521F639C3500953F94 /* Comment.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

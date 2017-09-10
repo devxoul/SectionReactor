@@ -9,39 +9,17 @@
 import UIKit
 
 import ReactorKit
-import ReusableKit
 import RxDataSources
 import RxSwift
 import UICollectionViewFlexLayout
 
 final class ArticleListViewController: UIViewController, View {
 
-  // MARK: Constants
-
-  fileprivate enum Reusable {
-    static let authorCell = ReusableCell<ArticleCardAuthorCell>()
-    static let textCell = ReusableCell<ArticleCardTextCell>()
-    static let reactionCell = ReusableCell<ArticleCardReactionCell>()
-    static let commentCell = ReusableCell<ArticleCardCommentCell>()
-    static let sectionBackgroundView = ReusableView<UICollectionReusableView>()
-    static let itemBackgroundView = ReusableView<UICollectionReusableView>()
-    static let emptyView = ReusableView<UICollectionReusableView>()
-  }
-
-  fileprivate enum Metric {
-  }
-
-  fileprivate enum Font {
-  }
-
-  fileprivate enum Color {
-  }
-
-
   // MARK: Properties
 
   var disposeBag = DisposeBag()
   let dataSource = RxCollectionViewSectionedReloadDataSource<ArticleListViewSection>()
+  let articleSectionDelegate = ArticleSectionDelegate()
 
 
   // MARK: UI
@@ -55,13 +33,6 @@ final class ArticleListViewController: UIViewController, View {
   ).then {
     $0.backgroundColor = .clear
     $0.alwaysBounceVertical = true
-    $0.register(Reusable.authorCell)
-    $0.register(Reusable.textCell)
-    $0.register(Reusable.reactionCell)
-    $0.register(Reusable.commentCell)
-    $0.register(Reusable.sectionBackgroundView, kind: UICollectionElementKindSectionBackground)
-    $0.register(Reusable.itemBackgroundView, kind: UICollectionElementKindItemBackground)
-    $0.register(Reusable.emptyView, kind: "empty")
   }
 
 
@@ -77,11 +48,9 @@ final class ArticleListViewController: UIViewController, View {
     super.init(nibName: nil, bundle: nil)
     self.title = "Articles"
 
+    self.articleSectionDelegate.registerReusables(to: self.collectionView)
     self.dataSource.configureCell = { [weak self] dataSource, collectionView, indexPath, sectionItem in
-      guard let `self` = self else {
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "__empty")
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "__empty", for: indexPath)
-      }
+      guard let `self` = self else { return collectionView.emptyCell(for: indexPath) }
 
       let articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency
       let articleCardTextCellDependency: ArticleCardTextCell.Dependency
@@ -97,43 +66,28 @@ final class ArticleListViewController: UIViewController, View {
       }
 
       switch sectionItem {
-      case let .articleCard(.author(cellReactor)):
-        let cell = collectionView.dequeue(Reusable.authorCell, for: indexPath)
-        cell.dependency = articleCardAuthorCellDependency
-        cell.reactor = cellReactor
-        return cell
-
-      case let .articleCard(.text(cellReactor)):
-        let cell = collectionView.dequeue(Reusable.textCell, for: indexPath)
-        cell.dependency = articleCardTextCellDependency
-        cell.reactor = cellReactor
-        return cell
-
-      case let .articleCard(.reaction(cellReactor)):
-        let cell = collectionView.dequeue(Reusable.reactionCell, for: indexPath)
-        cell.dependency = articleCardReactionCellDependency
-        cell.reactor = cellReactor
-        return cell
-
-      case let .articleCard(.comment(cellReactor)):
-        let cell = collectionView.dequeue(Reusable.commentCell, for: indexPath)
-        cell.reactor = cellReactor
-        return cell
+      case let .articleCard(item):
+        return self.articleSectionDelegate.cell(
+          collectionView: collectionView,
+          indexPath: indexPath,
+          sectionItem: item,
+          articleCardAuthorCellDependency: articleCardAuthorCellDependency,
+          articleCardTextCellDependency: articleCardTextCellDependency,
+          articleCardReactionCellDependency: articleCardReactionCellDependency
+        )
       }
     }
 
-    self.dataSource.supplementaryViewFactory = { dataSource, collectionView, kind, indexPath in
-      switch kind {
-      case UICollectionElementKindSectionBackground:
-        let view = collectionView.dequeue(Reusable.sectionBackgroundView, kind: kind, for: indexPath)
-        view.backgroundColor = .white
-        return view
-
-      case UICollectionElementKindItemBackground:
-        return collectionView.dequeue(Reusable.itemBackgroundView, kind: kind, for: indexPath)
-
-      default:
-        fatalError("fuck")
+    self.dataSource.supplementaryViewFactory = { [weak self] dataSource, collectionView, kind, indexPath in
+      guard let `self` = self else { return collectionView.emptyView(for: indexPath, kind: kind) }
+      switch dataSource[indexPath] {
+      case let .articleCard(item):
+        return self.articleSectionDelegate.background(
+          collectionView: collectionView,
+          kind: kind,
+          indexPath: indexPath,
+          sectionItem: item
+        )
       }
     }
   }
@@ -216,11 +170,11 @@ extension ArticleListViewController: UICollectionViewDelegateFlexLayout {
     and nextIndexPath: IndexPath
   ) -> CGFloat {
     switch (self.dataSource[indexPath], self.dataSource[nextIndexPath]) {
-    case (_, .articleCard(.comment)): return 15
-    case (.articleCard(.author), _): return 10
-    case (.articleCard(.text), _): return 10
-    case (.articleCard(.reaction), _): return 10
-    case (.articleCard(.comment), _): return 10
+    case let (.articleCard(item), .articleCard(nextItem)):
+      return self.articleSectionDelegate.cellVerticalSpacing(
+        sectionItem: item,
+        nextSectionItem: nextItem
+      )
     }
   }
 
@@ -232,17 +186,8 @@ extension ArticleListViewController: UICollectionViewDelegateFlexLayout {
   ) -> CGSize {
     let maxWidth = collectionViewLayout.maximumWidth(forItemAt: indexPath)
     switch self.dataSource[indexPath] {
-    case let .articleCard(.author(cellReactor)):
-      return Reusable.authorCell.class.size(width: maxWidth, reactor: cellReactor)
-
-    case let .articleCard(.text(cellReactor)):
-      return Reusable.textCell.class.size(width: maxWidth, reactor: cellReactor)
-
-    case let .articleCard(.reaction(cellReactor)):
-      return Reusable.reactionCell.class.size(width: maxWidth, reactor: cellReactor)
-
-    case let .articleCard(.comment(cellReactor)):
-      return Reusable.commentCell.class.size(width: maxWidth, reactor: cellReactor)
+    case let .articleCard(item):
+      return self.articleSectionDelegate.cellSize(maxWidth: maxWidth, sectionItem: item)
     }
   }
 }
