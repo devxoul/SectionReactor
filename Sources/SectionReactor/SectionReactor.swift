@@ -7,6 +7,7 @@ public protocol SectionReactorState {
   var sectionItems: [SectionItem] { get }
 }
 
+public typealias _SectionReactor = SectionReactor
 public protocol SectionReactor: Reactor {
   associatedtype State: SectionReactorState
 }
