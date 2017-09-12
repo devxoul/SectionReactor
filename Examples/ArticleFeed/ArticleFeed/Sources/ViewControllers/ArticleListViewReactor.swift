@@ -44,6 +44,7 @@ final class ArticleListViewReactor: Reactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .refresh:
+      guard self.currentState.isRefreshing == false else { return .empty() }
       return .concat([
         Observable.just(Mutation.setRefreshing(true)),
         self.articleService.articles().map(Mutation.setArticles),

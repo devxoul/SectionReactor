@@ -81,12 +81,12 @@ final class ArticleListViewController: UIViewController, View {
     self.dataSource.supplementaryViewFactory = { [weak self] dataSource, collectionView, kind, indexPath in
       guard let `self` = self else { return collectionView.emptyView(for: indexPath, kind: kind) }
       switch dataSource[indexPath] {
-      case let .articleCard(item):
+      case .articleCard:
         return self.articleSectionDelegate.background(
           collectionView: collectionView,
           kind: kind,
           indexPath: indexPath,
-          sectionItem: item
+          sectionItems: dataSource[indexPath.section].articleCardSectionItems
         )
       }
     }
@@ -174,6 +174,39 @@ extension ArticleListViewController: UICollectionViewDelegateFlexLayout {
       return self.articleSectionDelegate.cellVerticalSpacing(
         sectionItem: item,
         nextSectionItem: nextItem
+      )
+    }
+  }
+
+  // item margin
+  func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewFlexLayout,
+    marginForItemAt indexPath: IndexPath
+  ) -> UIEdgeInsets {
+    switch self.dataSource[indexPath] {
+    case let .articleCard(item):
+      return self.articleSectionDelegate.cellMargin(
+        collectionView: collectionView,
+        layout: collectionViewLayout,
+        indexPath: indexPath,
+        sectionItem: item
+      )
+    }
+  }
+
+  // item padding
+  func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewFlexLayout,
+    paddingForItemAt indexPath: IndexPath
+  ) -> UIEdgeInsets {
+    switch self.dataSource[indexPath] {
+    case let .articleCard(item):
+      return self.articleSectionDelegate.cellPadding(
+        layout: collectionViewLayout,
+        indexPath: indexPath,
+        sectionItem: item
       )
     }
   }

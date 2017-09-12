@@ -36,6 +36,8 @@
 		031254691F639C3500953F94 /* ArticleCardTextCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312544B1F639C3500953F94 /* ArticleCardTextCellReactor.swift */; };
 		0312546C1F639D8400953F94 /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312546B1F639D8400953F94 /* CompositionRoot.swift */; };
 		037E406F1F6450D70005A54E /* ArticleSectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037E406E1F6450D70005A54E /* ArticleSectionDelegate.swift */; };
+		03F482C91F678598008F0950 /* BorderedLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F482C81F678598008F0950 /* BorderedLayer.swift */; };
+		03F482CB1F678631008F0950 /* CollectionBorderedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F482CA1F678631008F0950 /* CollectionBorderedBackgroundView.swift */; };
 		F2A46C59D3F8EC92AFBD04D5 /* Pods_ArticleFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6ED26994F9A3571B8C6B252 /* Pods_ArticleFeed.framework */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +73,8 @@
 		0312544D1F639C3500953F94 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0312546B1F639D8400953F94 /* CompositionRoot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
 		037E406E1F6450D70005A54E /* ArticleSectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleSectionDelegate.swift; sourceTree = "<group>"; };
+		03F482C81F678598008F0950 /* BorderedLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedLayer.swift; sourceTree = "<group>"; };
+		03F482CA1F678631008F0950 /* CollectionBorderedBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionBorderedBackgroundView.swift; sourceTree = "<group>"; };
 		1459E30ECC2A914DBEE8DB4E /* Pods-ArticleFeed.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ArticleFeed.release.xcconfig"; path = "Pods/Target Support Files/Pods-ArticleFeed/Pods-ArticleFeed.release.xcconfig"; sourceTree = "<group>"; };
 		C6ED26994F9A3571B8C6B252 /* Pods_ArticleFeed.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ArticleFeed.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEC6C51D2B65CE2F484BF318 /* Pods-ArticleFeed.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ArticleFeed.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ArticleFeed/Pods-ArticleFeed.debug.xcconfig"; sourceTree = "<group>"; };
@@ -184,6 +188,7 @@
 			children = (
 				0312543B1F639C3500953F94 /* Snap.swift */,
 				0312543C1F639C3500953F94 /* String+BoundingRect.swift */,
+				03F482C81F678598008F0950 /* BorderedLayer.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -211,6 +216,7 @@
 				031254491F639C3500953F94 /* ArticleCardReactionCellReactor.swift */,
 				031254461F639C3500953F94 /* ArticleCardCommentCell.swift */,
 				031254471F639C3500953F94 /* ArticleCardCommentCellReactor.swift */,
+				03F482CA1F678631008F0950 /* CollectionBorderedBackgroundView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -402,6 +408,7 @@
 				031254671F639C3500953F94 /* ArticleCardReactionCellReactor.swift in Sources */,
 				031254651F639C3500953F94 /* ArticleCardCommentCellReactor.swift in Sources */,
 				031254561F639C3500953F94 /* UIView+Rx.swift in Sources */,
+				03F482CB1F678631008F0950 /* CollectionBorderedBackgroundView.swift in Sources */,
 				031254551F639C3500953F94 /* UICollectionViewFlexLayout+Rx.swift in Sources */,
 				031254571F639C3500953F94 /* FeedViewSection.swift in Sources */,
 				0312545A1F639C3500953F94 /* ArticleService.swift in Sources */,
@@ -410,6 +417,7 @@
 				031254661F639C3500953F94 /* ArticleCardReactionCell.swift in Sources */,
 				031254511F639C3500953F94 /* AppDelegate.swift in Sources */,
 				031254581F639C3500953F94 /* ArticleSectionReactor.swift in Sources */,
+				03F482C91F678598008F0950 /* BorderedLayer.swift in Sources */,
 				031254641F639C3500953F94 /* ArticleCardCommentCell.swift in Sources */,
 				031254591F639C3500953F94 /* ArticleViewSetion.swift in Sources */,
 				031254631F639C3500953F94 /* ArticleCardAuthorCellReactor.swift in Sources */,

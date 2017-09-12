@@ -25,6 +25,18 @@ extension ArticleListViewSection: SectionModelType {
   }
 }
 
+extension ArticleListViewSection {
+  var articleCardSectionItems: [ArticleSectionReactor.SectionItem] {
+    return self.items.flatMap { sectionItem in
+      if case let .articleCard(item) = sectionItem {
+        return item
+      } else {
+        return nil
+      }
+    }
+  }
+}
+
 enum ArticleListViewSectionItem {
   case articleCard(ArticleSectionReactor.SectionItem)
 }

@@ -14,6 +14,8 @@ protocol ArticleServiceType {
 
 final class ArticleService: ArticleServiceType {
   func articles() -> Observable<[Article]> {
-    return .just((0..<30).map { _ in Article.random() })
+    return Observable
+      .just((0..<30).map { _ in Article.random() })
+      .delay(0.7, scheduler: ConcurrentDispatchQueueScheduler(qos: DispatchQoS.utility))
   }
 }

@@ -87,7 +87,7 @@ final class ArticleViewController: UIViewController, View {
           collectionView: collectionView,
           kind: kind,
           indexPath: indexPath,
-          sectionItem: dataSource[indexPath]
+          sectionItems: dataSource[indexPath.section].items
         )
       }
     }
@@ -163,6 +163,33 @@ extension ArticleViewController: UICollectionViewDelegateFlexLayout {
     return self.articleSectionDelegate.cellVerticalSpacing(
       sectionItem: self.dataSource[indexPath],
       nextSectionItem: self.dataSource[nextIndexPath]
+    )
+  }
+
+  // item margin
+  func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewFlexLayout,
+    marginForItemAt indexPath: IndexPath
+  ) -> UIEdgeInsets {
+    return self.articleSectionDelegate.cellMargin(
+      collectionView: collectionView,
+      layout: collectionViewLayout,
+      indexPath: indexPath,
+      sectionItem: self.dataSource[indexPath]
+    )
+  }
+
+  // item padding
+  func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewFlexLayout,
+    paddingForItemAt indexPath: IndexPath
+  ) -> UIEdgeInsets {
+    return self.articleSectionDelegate.cellPadding(
+      layout: collectionViewLayout,
+      indexPath: indexPath,
+      sectionItem: self.dataSource[indexPath]
     )
   }
 
