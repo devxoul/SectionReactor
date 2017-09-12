@@ -14,7 +14,7 @@ public protocol SectionReactor: Reactor {
 
 public extension ObservableType {
   public func merge<State, R>(
-    sections sectionReactorSelectors: [((State) -> [R])]
+    sections sectionReactorSelectors: [(State) -> [R]]
   ) -> Observable<State> where E == State, R: SectionReactor {
     let sectionStatesDidChange: Observable<E> = self.flatMap { state -> Observable<E> in
       let sectionReactors = sectionReactorSelectors.flatMap { $0(state) }
@@ -25,9 +25,9 @@ public extension ObservableType {
   }
 
   public func merge<State, R>(
-    sections sectionReactorSelectors: [((State) -> R)]
+    sections sectionReactorSelectors: [(State) -> R]
   ) -> Observable<State> where E == State, R: SectionReactor {
-    let sectionReactorArraySelectors: [((State) -> [R])] = sectionReactorSelectors.map { selector in
+    let sectionReactorArraySelectors: [(State) -> [R]] = sectionReactorSelectors.map { selector in
       { state in [selector(state)] }
     }
     return self.merge(sections: sectionReactorArraySelectors)
