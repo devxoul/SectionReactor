@@ -38,8 +38,6 @@ final class ArticleViewReactor: Reactor {
   }
 
   func transform(state: Observable<State>) -> Observable<State> {
-    return state.with(sections: [
-      { $0.articleSectionReactor },
-    ])
+    return state.with(section: \.articleSectionReactor)
   }
 }

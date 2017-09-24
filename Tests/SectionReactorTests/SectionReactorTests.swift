@@ -152,16 +152,13 @@ final class ArticleListViewReactor: Reactor {
   func transform(state: Observable<State>) -> Observable<State> {
     switch self.testType {
     case .single:
-      return state.merge(sections: [{ $0.singleSectionReactor }])
+      return state.with(section: \.singleSectionReactor)
 
     case .multiple:
-      return state.merge(sections: [{ $0.multipleSectionReactors }])
+      return state.with(section: \.multipleSectionReactors)
 
     case .both:
-      return state.merge(sections: [
-        { [$0.singleSectionReactor] },
-        { $0.multipleSectionReactors },
-      ])
+      return state.with(section: \.singleSectionReactor).with(section: \.multipleSectionReactors)
     }
   }
 }
