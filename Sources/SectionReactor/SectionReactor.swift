@@ -8,12 +8,11 @@ public protocol SectionReactorState {
 }
 
 public typealias _SectionReactor = SectionReactor
-public protocol SectionReactor: Reactor {
-  associatedtype State: SectionReactorState
+public protocol SectionReactor: Reactor where State: SectionReactorState {
 }
 
 public extension ObservableType {
-  public func merge<State, R>(
+  public func with<State, R>(
     sections sectionReactorSelectors: [(State) -> [R]]
   ) -> Observable<State> where E == State, R: SectionReactor {
     let sectionStatesDidChange: Observable<E> = self.flatMap { state -> Observable<E> in
@@ -21,15 +20,15 @@ public extension ObservableType {
       let sectionStates = Observable.merge(sectionReactors.map { $0.state })
       return sectionStates.map { _ in state }
     }
-    return Observable.merge(self.asObservable(), sectionStatesDidChange)
+    return self.flatMap { _ in sectionStatesDidChange }
   }
 
-  public func merge<State, R>(
+  public func with<State, R>(
     sections sectionReactorSelectors: [(State) -> R]
   ) -> Observable<State> where E == State, R: SectionReactor {
     let sectionReactorArraySelectors: [(State) -> [R]] = sectionReactorSelectors.map { selector in
       { state in [selector(state)] }
     }
-    return self.merge(sections: sectionReactorArraySelectors)
+    return self.with(sections: sectionReactorArraySelectors)
   }
 }
