@@ -32,9 +32,9 @@ final class CompositionRoot {
         )
         let viewController = ArticleViewController(
           reactor: reactor,
-          articleCardAuthorCellDependencyFactory: { _ in .init(presentArticleViewController: {}) },
-          articleCardTextCellDependencyFactory: { _ in .init(presentArticleViewController: {}) },
-          articleCardReactionCellDependencyFactory: { _ in .init(presentArticleViewController: {}) }
+          articleCardAuthorCellDependencyFactory: { _, _ in .init(presentArticleViewController: {}) },
+          articleCardTextCellDependencyFactory: { _, _ in .init(presentArticleViewController: {}) },
+          articleCardReactionCellDependencyFactory: { _, _ in .init(presentArticleViewController: {}) }
         )
         from.navigationController?.pushViewController(viewController, animated: true)
       }

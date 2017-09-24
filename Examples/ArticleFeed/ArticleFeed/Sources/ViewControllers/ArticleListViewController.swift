@@ -103,7 +103,7 @@ final class ArticleListViewController: UIViewController, View {
     super.viewDidLoad()
     self.view.backgroundColor = 0xEDEDED.color
     self.view.addSubview(self.collectionView)
-    self.collectionView.addSubview(self.refreshControl)
+    self.collectionView.refreshControl = self.refreshControl
 
     self.collectionView.snp.makeConstraints { make in
       make.edges.equalToSuperview()

@@ -38,7 +38,7 @@ final class ArticleViewReactor: Reactor {
   }
 
   func transform(state: Observable<State>) -> Observable<State> {
-    return state.merge(sections: [
+    return state.with(sections: [
       { $0.articleSectionReactor },
     ])
   }
