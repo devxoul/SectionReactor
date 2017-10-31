@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "SectionReactor"
-  s.version          = "0.2.1"
+  s.version          = "0.3.0"
   s.summary          = "A ReactorKit extension for managing table view and collection view sections with RxDataSources."
   s.homepage         = "https://github.com/devxoul/SectionReactor"
   s.license          = { :type => "MIT", :file => "LICENSE" }
