@@ -8,9 +8,9 @@ let package = Package(
     .library(name: "SectionReactor", targets: ["SectionReactor"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/ReactorKit/ReactorKit.git", .branch("swift-4.0")),
-    .package(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", .branch("swift4.0")),
-    .package(url: "https://github.com/devxoul/RxExpect", .branch("swift-4.0")),
+    .package(url: "https://github.com/ReactorKit/ReactorKit.git", .upToNextMajor(from: "1.0.0")),
+    .package(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", .upToNextMajor(from: "3.0.1")),
+    .package(url: "https://github.com/devxoul/RxExpect", .upToNextMajor(from: "1.0.0")),
   ],
   targets: [
     .target(name: "SectionReactor", dependencies: ["ReactorKit", "RxDataSources"]),

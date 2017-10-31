@@ -5,36 +5,36 @@
         "package": "ReactorKit",
         "repositoryURL": "https://github.com/ReactorKit/ReactorKit.git",
         "state": {
-          "branch": "swift-4.0",
-          "revision": "eafe402d38189f8d07b513cd0c812856cca81bcc",
-          "version": null
+          "branch": null,
+          "revision": "5759076467fb36107fb921443a707fabbae43069",
+          "version": "1.0.0"
         }
       },
       {
         "package": "RxDataSources",
         "repositoryURL": "https://github.com/RxSwiftCommunity/RxDataSources.git",
         "state": {
-          "branch": "swift4.0",
-          "revision": "847b3ce429f5dab62ddc00d5d2d10131a650af11",
-          "version": null
+          "branch": null,
+          "revision": "1061a383f1d83989cd319efc7ff25ed9f4413236",
+          "version": "3.0.1"
         }
       },
       {
         "package": "RxExpect",
         "repositoryURL": "https://github.com/devxoul/RxExpect.git",
         "state": {
-          "branch": "swift-4.0",
-          "revision": "b3726078bf37f699da9e7566b16c996e94e8d321",
-          "version": null
+          "branch": null,
+          "revision": "cb1ba5377d8d8f9743e26ece6a4d42d11dbd3792",
+          "version": "1.0.0"
         }
       },
       {
         "package": "RxSwift",
         "repositoryURL": "https://github.com/ReactiveX/RxSwift.git",
         "state": {
-          "branch": "rxswift4.0-swift4.0",
-          "revision": "cb0fb3bda41f2a5622909b6e6deafd435efaf859",
-          "version": null
+          "branch": null,
+          "revision": "12cccb171ad9038251af6883807f0290c1d75a5b",
+          "version": "4.0.0"
         }
       }
     ]
