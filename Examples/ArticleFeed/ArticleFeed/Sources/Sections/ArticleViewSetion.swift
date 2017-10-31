@@ -20,7 +20,7 @@ extension ArticleViewSection: SectionModelType {
     }
   }
 
-  init(original: ArticleViewSection, items: [ArticleViewSection.Item]) {
+  init(original: ArticleViewSection, items: [ArticleViewSectionItem]) {
     self = original
   }
 }

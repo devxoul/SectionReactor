@@ -32,56 +32,62 @@ final class SectionReactorTests: XCTestCase {
   }
 
   func testSections_areChanged_whenSingleSectionReactorIsChanged() {
-    RxExpect { test in
-      let reactor = test.retain(ArticleListViewReactor(testType: .single))
-      test.input(reactor.currentState.singleSectionReactor.action, [
-        next(100, .append),
-        next(200, .append),
-      ])
-      test.assert(reactor.state.map { $0.sections.count }).since(200).equal([3])
-      test.assert(reactor.state.map { $0.sections[0].items.count }).since(200).equal([2])
-      test.assert(reactor.state.map { $0.sections[1].items.count }).since(200).equal([0])
-      test.assert(reactor.state.map { $0.sections[2].items.count }).since(200).equal([0])
+    let test = RxExpect()
+    let reactor = test.retain(ArticleListViewReactor(testType: .single))
+    test.input(reactor.currentState.singleSectionReactor.action, [
+      next(100, .append),
+      next(200, .append),
+    ])
+    test.assert(reactor.state.map { $0.sections }) { events in
+      let sections = events.last?.value.element
+      XCTAssertEqual(sections?.count, 3)
+      XCTAssertEqual(sections?[0].items.count, 2)
+      XCTAssertEqual(sections?[1].items.count, 0)
+      XCTAssertEqual(sections?[2].items.count, 0)
     }
   }
 
   func testSections_areChanged_whenMultipleSectionReactorsAreChanged() {
-    RxExpect { test in
-      let reactor = test.retain(ArticleListViewReactor(testType: .multiple))
-      test.input(reactor.currentState.multipleSectionReactors[0].action, [
-        next(100, .append),
-        next(200, .append),
-        next(300, .append),
-      ])
-      test.input(reactor.currentState.multipleSectionReactors[1].action, [
-        next(400, .append),
-      ])
-      test.assert(reactor.state.map { $0.sections.count }).since(400).equal([3])
-      test.assert(reactor.state.map { $0.sections[0].items.count }).since(400).equal([0])
-      test.assert(reactor.state.map { $0.sections[1].items.count }).since(400).equal([3])
-      test.assert(reactor.state.map { $0.sections[2].items.count }).since(400).equal([1])
+    let test = RxExpect()
+    let reactor = test.retain(ArticleListViewReactor(testType: .multiple))
+    test.input(reactor.currentState.multipleSectionReactors[0].action, [
+      next(100, .append),
+      next(200, .append),
+      next(300, .append),
+    ])
+    test.input(reactor.currentState.multipleSectionReactors[1].action, [
+      next(400, .append),
+    ])
+    test.assert(reactor.state.map { $0.sections }) { events in
+      let sections = events.last?.value.element
+      XCTAssertEqual(sections?.count, 3)
+      XCTAssertEqual(sections?[0].items.count, 0)
+      XCTAssertEqual(sections?[1].items.count, 3)
+      XCTAssertEqual(sections?[2].items.count, 1)
     }
   }
 
   func testSections_areChanged_whenBothSectionReactorsAreChanged() {
-    RxExpect { test in
-      let reactor = test.retain(ArticleListViewReactor(testType: .both))
-      test.input(reactor.currentState.singleSectionReactor.action, [
-        next(100, .append),
-        next(200, .append),
-        next(300, .append),
-      ])
-      test.input(reactor.currentState.multipleSectionReactors[0].action, [
-        next(400, .append),
-      ])
-      test.input(reactor.currentState.multipleSectionReactors[1].action, [
-        next(500, .append),
-        next(600, .append),
-      ])
-      test.assert(reactor.state.map { $0.sections.count }).since(600).equal([3])
-      test.assert(reactor.state.map { $0.sections[0].items.count }).since(600).equal([3])
-      test.assert(reactor.state.map { $0.sections[1].items.count }).since(600).equal([1])
-      test.assert(reactor.state.map { $0.sections[2].items.count }).since(600).equal([2])
+    let test = RxExpect()
+    let reactor = test.retain(ArticleListViewReactor(testType: .both))
+    test.input(reactor.currentState.singleSectionReactor.action, [
+      next(100, .append),
+      next(200, .append),
+      next(300, .append),
+    ])
+    test.input(reactor.currentState.multipleSectionReactors[0].action, [
+      next(400, .append),
+    ])
+    test.input(reactor.currentState.multipleSectionReactors[1].action, [
+      next(500, .append),
+      next(600, .append),
+    ])
+    test.assert(reactor.state.map { $0.sections }) { events in
+      let sections = events.last?.value.element
+      XCTAssertEqual(sections?.count, 3)
+      XCTAssertEqual(sections?[0].items.count, 3)
+      XCTAssertEqual(sections?[1].items.count, 1)
+      XCTAssertEqual(sections?[2].items.count, 2)
     }
   }
 }
@@ -146,16 +152,13 @@ final class ArticleListViewReactor: Reactor {
   func transform(state: Observable<State>) -> Observable<State> {
     switch self.testType {
     case .single:
-      return state.merge(sections: [{ $0.singleSectionReactor }])
+      return state.with(section: \.singleSectionReactor)
 
     case .multiple:
-      return state.merge(sections: [{ $0.multipleSectionReactors }])
+      return state.with(section: \.multipleSectionReactors)
 
     case .both:
-      return state.merge(sections: [
-        { [$0.singleSectionReactor] },
-        { $0.multipleSectionReactors },
-      ])
+      return state.with(section: \.singleSectionReactor).with(section: \.multipleSectionReactors)
     }
   }
 }
