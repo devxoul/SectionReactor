@@ -16,7 +16,7 @@ final class SectionReactorTests: XCTestCase {
   }
 
   func testInitialState_multiple() {
-    let reactor = ArticleListViewReactor(testType: .multiple)
+    let reactor = ArticleListViewReactor(testType: .multiple(2))
     XCTAssertEqual(reactor.currentState.sections.count, 3)
     XCTAssertEqual(reactor.currentState.sections[0].items.count, 0)
     XCTAssertEqual(reactor.currentState.sections[1].items.count, 0)
@@ -29,6 +29,50 @@ final class SectionReactorTests: XCTestCase {
     XCTAssertEqual(reactor.currentState.sections[0].items.count, 0)
     XCTAssertEqual(reactor.currentState.sections[1].items.count, 0)
     XCTAssertEqual(reactor.currentState.sections[2].items.count, 0)
+  }
+
+  func testTitleIsChanged_withSingleReactor() {
+    let test = RxExpect()
+    let reactor = test.retain(ArticleListViewReactor(testType: .single))
+    test.input(reactor.action, [
+      next(100, .setTitle("Hello, Single!"))
+    ])
+    test.assert(reactor.state.map { $0.title }) { events in
+      XCTAssertEqual(events.last?.value.element ?? nil, "Hello, Single!")
+    }
+  }
+
+  func testTitleIsChanged_withEmptyMultipleReactors() {
+    let test = RxExpect()
+    let reactor = test.retain(ArticleListViewReactor(testType: .multiple(0)))
+    test.input(reactor.action, [
+      next(100, .setTitle("Hello, Empty Multiple!"))
+    ])
+    test.assert(reactor.state.map { $0.title }) { events in
+      XCTAssertEqual(events.last?.value.element ?? nil, "Hello, Empty Multiple!")
+    }
+  }
+
+  func testTitleIsChanged_withMultipleReactors() {
+    let test = RxExpect()
+    let reactor = test.retain(ArticleListViewReactor(testType: .multiple(3)))
+    test.input(reactor.action, [
+      next(100, .setTitle("Hello, Multiple!"))
+    ])
+    test.assert(reactor.state.map { $0.title }) { events in
+      XCTAssertEqual(events.last?.value.element ?? nil, "Hello, Multiple!")
+    }
+  }
+
+  func testTitleIsChanged_withBothReactors() {
+    let test = RxExpect()
+    let reactor = test.retain(ArticleListViewReactor(testType: .both))
+    test.input(reactor.action, [
+      next(100, .setTitle("Hello, Both!"))
+    ])
+    test.assert(reactor.state.map { $0.title }) { events in
+      XCTAssertEqual(events.last?.value.element ?? nil, "Hello, Both!")
+    }
   }
 
   func testSections_areChanged_whenSingleSectionReactorIsChanged() {
@@ -49,7 +93,7 @@ final class SectionReactorTests: XCTestCase {
 
   func testSections_areChanged_whenMultipleSectionReactorsAreChanged() {
     let test = RxExpect()
-    let reactor = test.retain(ArticleListViewReactor(testType: .multiple))
+    let reactor = test.retain(ArticleListViewReactor(testType: .multiple(2)))
     test.input(reactor.currentState.multipleSectionReactors[0].action, [
       next(100, .append),
       next(200, .append),
@@ -117,10 +161,16 @@ typealias ArticleListSectionItem = Void
 // MARK: - View Reactor
 
 final class ArticleListViewReactor: Reactor {
-  enum Action {}
-  enum Mutation {}
+  enum Action {
+    case setTitle(String)
+  }
+
+  enum Mutation {
+    case setTitle(String)
+  }
 
   struct State {
+    var title: String?
     var singleSectionReactor: ArticleSectionReactor
     var multipleSectionReactors: [ArticleSectionReactor]
     var sections: [ArticleListSection] {
@@ -133,7 +183,7 @@ final class ArticleListViewReactor: Reactor {
 
   enum TestType {
     case single
-    case multiple
+    case multiple(Int)
     case both
   }
 
@@ -143,10 +193,33 @@ final class ArticleListViewReactor: Reactor {
   init(testType: TestType) {
     defer { _ = self.state }
     self.initialState = State(
+      title: nil,
       singleSectionReactor: ArticleSectionReactor(),
-      multipleSectionReactors: [ArticleSectionReactor(), ArticleSectionReactor()]
+      multipleSectionReactors: {
+        if case let .multiple(count) = testType {
+          return (0..<count).map { _ in ArticleSectionReactor() }
+        } else {
+          return (0..<2).map { _ in ArticleSectionReactor() }
+        }
+      }()
     )
     self.testType = testType
+  }
+
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case let .setTitle(title):
+      return .just(.setTitle(title))
+    }
+  }
+
+  func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+    switch mutation {
+    case let .setTitle(title):
+      newState.title = title
+    }
+    return newState
   }
 
   func transform(state: Observable<State>) -> Observable<State> {

@@ -35,6 +35,7 @@ public extension ObservableType {
     return self.flatMap { state -> Observable<E> in
       let sectionReactors = state[keyPath: sectionReactorsKeyPath].sectionReactors
       let sectionStates = Observable.merge(sectionReactors.map { $0.state })
+      guard !sectionReactors.isEmpty else { return .just(state) }
       return sectionStates.map { _ in state }
     }
   }
