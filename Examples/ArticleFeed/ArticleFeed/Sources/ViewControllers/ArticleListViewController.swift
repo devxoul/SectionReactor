@@ -18,8 +18,11 @@ final class ArticleListViewController: UIViewController, View {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
-  let dataSource = RxCollectionViewSectionedReloadDataSource<ArticleListViewSection>()
+  lazy var dataSource = self.createDataSource()
   let articleSectionDelegate = ArticleSectionDelegate()
+  private let articleCardAuthorCellDependencyFactory: (Article, UIViewController) -> ArticleCardAuthorCell.Dependency
+  private let articleCardTextCellDependencyFactory: (Article, UIViewController) -> ArticleCardTextCell.Dependency
+  private let articleCardReactionCellDependencyFactory: (Article, UIViewController) -> ArticleCardReactionCell.Dependency
 
 
   // MARK: UI
@@ -45,55 +48,61 @@ final class ArticleListViewController: UIViewController, View {
     articleCardReactionCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardReactionCell.Dependency
   ) {
     defer { self.reactor = reactor }
+    self.articleCardAuthorCellDependencyFactory = articleCardAuthorCellDependencyFactory
+    self.articleCardTextCellDependencyFactory = articleCardTextCellDependencyFactory
+    self.articleCardReactionCellDependencyFactory = articleCardReactionCellDependencyFactory
     super.init(nibName: nil, bundle: nil)
     self.title = "Articles"
-
     self.articleSectionDelegate.registerReusables(to: self.collectionView)
-    self.dataSource.configureCell = { [weak self] dataSource, collectionView, indexPath, sectionItem in
-      guard let `self` = self else { return collectionView.emptyCell(for: indexPath) }
-
-      let articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency
-      let articleCardTextCellDependency: ArticleCardTextCell.Dependency
-      let articleCardReactionCellDependency: ArticleCardReactionCell.Dependency
-
-      let section = dataSource[indexPath.section]
-      switch section {
-      case let .article(sectionReactor):
-        let article = sectionReactor.currentState.article
-        articleCardAuthorCellDependency = articleCardAuthorCellDependencyFactory(article, self)
-        articleCardTextCellDependency = articleCardTextCellDependencyFactory(article, self)
-        articleCardReactionCellDependency = articleCardReactionCellDependencyFactory(article, self)
-      }
-
-      switch sectionItem {
-      case let .articleCard(item):
-        return self.articleSectionDelegate.cell(
-          collectionView: collectionView,
-          indexPath: indexPath,
-          sectionItem: item,
-          articleCardAuthorCellDependency: articleCardAuthorCellDependency,
-          articleCardTextCellDependency: articleCardTextCellDependency,
-          articleCardReactionCellDependency: articleCardReactionCellDependency
-        )
-      }
-    }
-
-    self.dataSource.supplementaryViewFactory = { [weak self] dataSource, collectionView, kind, indexPath in
-      guard let `self` = self else { return collectionView.emptyView(for: indexPath, kind: kind) }
-      switch dataSource[indexPath] {
-      case .articleCard:
-        return self.articleSectionDelegate.background(
-          collectionView: collectionView,
-          kind: kind,
-          indexPath: indexPath,
-          sectionItems: dataSource[indexPath.section].articleCardSectionItems
-        )
-      }
-    }
   }
 
   required convenience init(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  private func createDataSource() -> RxCollectionViewSectionedReloadDataSource<ArticleListViewSection> {
+    return .init(
+      configureCell: { [weak self] dataSource, collectionView, indexPath, sectionItem in
+        guard let `self` = self else { return collectionView.emptyCell(for: indexPath) }
+
+        let articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency
+        let articleCardTextCellDependency: ArticleCardTextCell.Dependency
+        let articleCardReactionCellDependency: ArticleCardReactionCell.Dependency
+
+        let section = dataSource[indexPath.section]
+        switch section {
+        case let .article(sectionReactor):
+          let article = sectionReactor.currentState.article
+          articleCardAuthorCellDependency = self.articleCardAuthorCellDependencyFactory(article, self)
+          articleCardTextCellDependency = self.articleCardTextCellDependencyFactory(article, self)
+          articleCardReactionCellDependency = self.articleCardReactionCellDependencyFactory(article, self)
+        }
+
+        switch sectionItem {
+        case let .articleCard(item):
+          return self.articleSectionDelegate.cell(
+            collectionView: collectionView,
+            indexPath: indexPath,
+            sectionItem: item,
+            articleCardAuthorCellDependency: articleCardAuthorCellDependency,
+            articleCardTextCellDependency: articleCardTextCellDependency,
+            articleCardReactionCellDependency: articleCardReactionCellDependency
+          )
+        }
+      },
+      configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath in
+        guard let `self` = self else { return collectionView.emptyView(for: indexPath, kind: kind) }
+        switch dataSource[indexPath] {
+        case .articleCard:
+          return self.articleSectionDelegate.background(
+            collectionView: collectionView,
+            kind: kind,
+            indexPath: indexPath,
+            sectionItems: dataSource[indexPath.section].articleCardSectionItems
+          )
+        }
+      }
+    )
   }
 
 

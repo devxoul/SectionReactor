@@ -18,8 +18,11 @@ final class ArticleViewController: UIViewController, View {
   // MARK: Properties
 
   var disposeBag = DisposeBag()
-  let dataSource = RxCollectionViewSectionedReloadDataSource<ArticleViewSection>()
+  lazy var dataSource = self.createDataSource()
   let articleSectionDelegate = ArticleSectionDelegate()
+  private let articleCardAuthorCellDependencyFactory: (Article, UIViewController) -> ArticleCardAuthorCell.Dependency
+  private let articleCardTextCellDependencyFactory: (Article, UIViewController) -> ArticleCardTextCell.Dependency
+  private let articleCardReactionCellDependencyFactory: (Article, UIViewController) -> ArticleCardReactionCell.Dependency
 
 
   // MARK: UI
@@ -42,59 +45,64 @@ final class ArticleViewController: UIViewController, View {
     articleCardReactionCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardReactionCell.Dependency
   ) {
     defer { self.reactor = reactor }
+    self.articleCardAuthorCellDependencyFactory = articleCardAuthorCellDependencyFactory
+    self.articleCardTextCellDependencyFactory = articleCardTextCellDependencyFactory
+    self.articleCardReactionCellDependencyFactory = articleCardReactionCellDependencyFactory
     super.init(nibName: nil, bundle: nil)
-
     self.title = "Article"
-
     self.articleSectionDelegate.registerReusables(to: self.collectionView)
-    self.dataSource.configureCell = { [weak self] dataSource, collectionView, indexPath, sectionItem in
-      guard let `self` = self else {
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "__empty")
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "__empty", for: indexPath)
-      }
-
-      let articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency
-      let articleCardTextCellDependency: ArticleCardTextCell.Dependency
-      let articleCardReactionCellDependency: ArticleCardReactionCell.Dependency
-
-      let section = dataSource[indexPath.section]
-      switch section {
-      case let .article(sectionReactor):
-        let article = sectionReactor.currentState.article
-        articleCardAuthorCellDependency = articleCardAuthorCellDependencyFactory(article, self)
-        articleCardTextCellDependency = articleCardTextCellDependencyFactory(article, self)
-        articleCardReactionCellDependency = articleCardReactionCellDependencyFactory(article, self)
-      }
-
-      return self.articleSectionDelegate.cell(
-        collectionView: collectionView,
-        indexPath: indexPath,
-        sectionItem: sectionItem,
-        articleCardAuthorCellDependency: articleCardAuthorCellDependency,
-        articleCardTextCellDependency: articleCardTextCellDependency,
-        articleCardReactionCellDependency: articleCardReactionCellDependency
-      )
-    }
-
-    self.dataSource.supplementaryViewFactory = { [weak self] dataSource, collectionView, kind, indexPath in
-      guard let `self` = self else {
-        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: "__empty")
-        return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "__empty", for: indexPath)
-      }
-      switch dataSource[indexPath.section] {
-      case .article:
-        return self.articleSectionDelegate.background(
-          collectionView: collectionView,
-          kind: kind,
-          indexPath: indexPath,
-          sectionItems: dataSource[indexPath.section].items
-        )
-      }
-    }
   }
 
   required convenience init(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  private func createDataSource() -> RxCollectionViewSectionedReloadDataSource<ArticleViewSection> {
+    return .init(
+      configureCell: { [weak self] dataSource, collectionView, indexPath, sectionItem in
+        guard let `self` = self else {
+          collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "__empty")
+          return collectionView.dequeueReusableCell(withReuseIdentifier: "__empty", for: indexPath)
+        }
+
+        let articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency
+        let articleCardTextCellDependency: ArticleCardTextCell.Dependency
+        let articleCardReactionCellDependency: ArticleCardReactionCell.Dependency
+
+        let section = dataSource[indexPath.section]
+        switch section {
+        case let .article(sectionReactor):
+          let article = sectionReactor.currentState.article
+          articleCardAuthorCellDependency = self.articleCardAuthorCellDependencyFactory(article, self)
+          articleCardTextCellDependency = self.articleCardTextCellDependencyFactory(article, self)
+          articleCardReactionCellDependency = self.articleCardReactionCellDependencyFactory(article, self)
+        }
+
+        return self.articleSectionDelegate.cell(
+          collectionView: collectionView,
+          indexPath: indexPath,
+          sectionItem: sectionItem,
+          articleCardAuthorCellDependency: articleCardAuthorCellDependency,
+          articleCardTextCellDependency: articleCardTextCellDependency,
+          articleCardReactionCellDependency: articleCardReactionCellDependency
+        )
+      },
+      configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath in
+        guard let `self` = self else {
+          collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: "__empty")
+          return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "__empty", for: indexPath)
+        }
+        switch dataSource[indexPath.section] {
+        case .article:
+          return self.articleSectionDelegate.background(
+            collectionView: collectionView,
+            kind: kind,
+            indexPath: indexPath,
+            sectionItems: dataSource[indexPath.section].items
+          )
+        }
+      }
+    )
   }
 
 
