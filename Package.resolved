@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/ReactorKit/ReactorKit.git",
         "state": {
           "branch": null,
-          "revision": "5759076467fb36107fb921443a707fabbae43069",
-          "version": "1.0.0"
+          "revision": "4257c86607e2ae41eee7a3631dd6ffc8eba15f38",
+          "version": "1.1.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/RxSwiftCommunity/RxDataSources.git",
         "state": {
           "branch": null,
-          "revision": "1061a383f1d83989cd319efc7ff25ed9f4413236",
-          "version": "3.0.1"
+          "revision": "ddfc9a1fdba650984f3a72b5b318e55fcfeccbae",
+          "version": "3.0.2"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/devxoul/RxExpect.git",
         "state": {
           "branch": null,
-          "revision": "cb1ba5377d8d8f9743e26ece6a4d42d11dbd3792",
-          "version": "1.0.0"
+          "revision": "d27d2f730a41728e0f4ed7d8326e14296d3a2766",
+          "version": "1.1.0"
         }
       },
       {
