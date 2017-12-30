@@ -19,10 +19,7 @@ final class ArticleListViewController: UIViewController, View {
 
   var disposeBag = DisposeBag()
   lazy var dataSource = self.createDataSource()
-  let articleSectionDelegate = ArticleSectionDelegate()
-  private let articleCardAuthorCellDependencyFactory: (Article, UIViewController) -> ArticleCardAuthorCell.Dependency
-  private let articleCardTextCellDependencyFactory: (Article, UIViewController) -> ArticleCardTextCell.Dependency
-  private let articleCardReactionCellDependencyFactory: (Article, UIViewController) -> ArticleCardReactionCell.Dependency
+  let articleSectionDelegate: ArticleSectionDelegate
 
 
   // MARK: UI
@@ -41,16 +38,9 @@ final class ArticleListViewController: UIViewController, View {
 
   // MARK: Initializing
 
-  init(
-    reactor: ArticleListViewReactor,
-    articleCardAuthorCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardAuthorCell.Dependency,
-    articleCardTextCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardTextCell.Dependency,
-    articleCardReactionCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardReactionCell.Dependency
-  ) {
+  init(reactor: ArticleListViewReactor, articleSectionDelegate: ArticleSectionDelegate) {
     defer { self.reactor = reactor }
-    self.articleCardAuthorCellDependencyFactory = articleCardAuthorCellDependencyFactory
-    self.articleCardTextCellDependencyFactory = articleCardTextCellDependencyFactory
-    self.articleCardReactionCellDependencyFactory = articleCardReactionCellDependencyFactory
+    self.articleSectionDelegate = articleSectionDelegate
     super.init(nibName: nil, bundle: nil)
     self.title = "Articles"
     self.articleSectionDelegate.registerReusables(to: self.collectionView)
@@ -64,41 +54,26 @@ final class ArticleListViewController: UIViewController, View {
     return .init(
       configureCell: { [weak self] dataSource, collectionView, indexPath, sectionItem in
         guard let `self` = self else { return collectionView.emptyCell(for: indexPath) }
-
-        let articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency
-        let articleCardTextCellDependency: ArticleCardTextCell.Dependency
-        let articleCardReactionCellDependency: ArticleCardReactionCell.Dependency
-
-        let section = dataSource[indexPath.section]
-        switch section {
-        case let .article(sectionReactor):
-          let article = sectionReactor.currentState.article
-          articleCardAuthorCellDependency = self.articleCardAuthorCellDependencyFactory(article, self)
-          articleCardTextCellDependency = self.articleCardTextCellDependencyFactory(article, self)
-          articleCardReactionCellDependency = self.articleCardReactionCellDependencyFactory(article, self)
-        }
-
         switch sectionItem {
-        case let .articleCard(item):
+        case let .articleCard(sectionReactor, item):
           return self.articleSectionDelegate.cell(
             collectionView: collectionView,
             indexPath: indexPath,
-            sectionItem: item,
-            articleCardAuthorCellDependency: articleCardAuthorCellDependency,
-            articleCardTextCellDependency: articleCardTextCellDependency,
-            articleCardReactionCellDependency: articleCardReactionCellDependency
+            sectionReactor: sectionReactor,
+            sectionItem: item
           )
         }
       },
       configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath in
         guard let `self` = self else { return collectionView.emptyView(for: indexPath, kind: kind) }
         switch dataSource[indexPath] {
-        case .articleCard:
-          return self.articleSectionDelegate.background(
+        case let .articleCard(sectionReactor, item):
+          return self.articleSectionDelegate.supplementaryView(
             collectionView: collectionView,
             kind: kind,
             indexPath: indexPath,
-            sectionItems: dataSource[indexPath.section].articleCardSectionItems
+            sectionReactor: sectionReactor,
+            sectionItem: item
           )
         }
       }
@@ -179,8 +154,10 @@ extension ArticleListViewController: UICollectionViewDelegateFlexLayout {
     and nextIndexPath: IndexPath
   ) -> CGFloat {
     switch (self.dataSource[indexPath], self.dataSource[nextIndexPath]) {
-    case let (.articleCard(item), .articleCard(nextItem)):
+    case let (.articleCard(_, item), .articleCard(_, nextItem)):
       return self.articleSectionDelegate.cellVerticalSpacing(
+        collectionView: collectionView,
+        layout: collectionViewLayout,
         sectionItem: item,
         nextSectionItem: nextItem
       )
@@ -194,7 +171,7 @@ extension ArticleListViewController: UICollectionViewDelegateFlexLayout {
     marginForItemAt indexPath: IndexPath
   ) -> UIEdgeInsets {
     switch self.dataSource[indexPath] {
-    case let .articleCard(item):
+    case let .articleCard(_, item):
       return self.articleSectionDelegate.cellMargin(
         collectionView: collectionView,
         layout: collectionViewLayout,
@@ -211,8 +188,9 @@ extension ArticleListViewController: UICollectionViewDelegateFlexLayout {
     paddingForItemAt indexPath: IndexPath
   ) -> UIEdgeInsets {
     switch self.dataSource[indexPath] {
-    case let .articleCard(item):
+    case let .articleCard(_, item):
       return self.articleSectionDelegate.cellPadding(
+        collectionView: collectionView,
         layout: collectionViewLayout,
         indexPath: indexPath,
         sectionItem: item
@@ -226,10 +204,14 @@ extension ArticleListViewController: UICollectionViewDelegateFlexLayout {
     layout collectionViewLayout: UICollectionViewFlexLayout,
     sizeForItemAt indexPath: IndexPath
   ) -> CGSize {
-    let maxWidth = collectionViewLayout.maximumWidth(forItemAt: indexPath)
     switch self.dataSource[indexPath] {
-    case let .articleCard(item):
-      return self.articleSectionDelegate.cellSize(maxWidth: maxWidth, sectionItem: item)
+    case let .articleCard(_, item):
+      return self.articleSectionDelegate.cellSize(
+        collectionView: collectionView,
+        layout: collectionViewLayout,
+        indexPath: indexPath,
+        sectionItem: item
+      )
     }
   }
 }

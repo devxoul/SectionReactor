@@ -19,10 +19,7 @@ final class ArticleViewController: UIViewController, View {
 
   var disposeBag = DisposeBag()
   lazy var dataSource = self.createDataSource()
-  let articleSectionDelegate = ArticleSectionDelegate()
-  private let articleCardAuthorCellDependencyFactory: (Article, UIViewController) -> ArticleCardAuthorCell.Dependency
-  private let articleCardTextCellDependencyFactory: (Article, UIViewController) -> ArticleCardTextCell.Dependency
-  private let articleCardReactionCellDependencyFactory: (Article, UIViewController) -> ArticleCardReactionCell.Dependency
+  let articleSectionDelegate: ArticleSectionDelegate
 
 
   // MARK: UI
@@ -38,16 +35,9 @@ final class ArticleViewController: UIViewController, View {
 
   // MARK: Initializing
 
-  init(
-    reactor: ArticleViewReactor,
-    articleCardAuthorCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardAuthorCell.Dependency,
-    articleCardTextCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardTextCell.Dependency,
-    articleCardReactionCellDependencyFactory: @escaping (Article, UIViewController) -> ArticleCardReactionCell.Dependency
-  ) {
+  init(reactor: ArticleViewReactor, articleSectionDelegate: ArticleSectionDelegate) {
     defer { self.reactor = reactor }
-    self.articleCardAuthorCellDependencyFactory = articleCardAuthorCellDependencyFactory
-    self.articleCardTextCellDependencyFactory = articleCardTextCellDependencyFactory
-    self.articleCardReactionCellDependencyFactory = articleCardReactionCellDependencyFactory
+    self.articleSectionDelegate = articleSectionDelegate
     super.init(nibName: nil, bundle: nil)
     self.title = "Article"
     self.articleSectionDelegate.registerReusables(to: self.collectionView)
@@ -60,47 +50,23 @@ final class ArticleViewController: UIViewController, View {
   private func createDataSource() -> RxCollectionViewSectionedReloadDataSource<ArticleViewSection> {
     return .init(
       configureCell: { [weak self] dataSource, collectionView, indexPath, sectionItem in
-        guard let `self` = self else {
-          collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "__empty")
-          return collectionView.dequeueReusableCell(withReuseIdentifier: "__empty", for: indexPath)
-        }
-
-        let articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency
-        let articleCardTextCellDependency: ArticleCardTextCell.Dependency
-        let articleCardReactionCellDependency: ArticleCardReactionCell.Dependency
-
-        let section = dataSource[indexPath.section]
-        switch section {
-        case let .article(sectionReactor):
-          let article = sectionReactor.currentState.article
-          articleCardAuthorCellDependency = self.articleCardAuthorCellDependencyFactory(article, self)
-          articleCardTextCellDependency = self.articleCardTextCellDependencyFactory(article, self)
-          articleCardReactionCellDependency = self.articleCardReactionCellDependencyFactory(article, self)
-        }
-
+        guard let `self` = self else { return collectionView.emptyCell(for: indexPath) }
         return self.articleSectionDelegate.cell(
           collectionView: collectionView,
           indexPath: indexPath,
-          sectionItem: sectionItem,
-          articleCardAuthorCellDependency: articleCardAuthorCellDependency,
-          articleCardTextCellDependency: articleCardTextCellDependency,
-          articleCardReactionCellDependency: articleCardReactionCellDependency
+          sectionReactor: sectionItem.sectionReactor,
+          sectionItem: sectionItem.sectionItem
         )
       },
       configureSupplementaryView: { [weak self] dataSource, collectionView, kind, indexPath in
-        guard let `self` = self else {
-          collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: "__empty")
-          return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "__empty", for: indexPath)
-        }
-        switch dataSource[indexPath.section] {
-        case .article:
-          return self.articleSectionDelegate.background(
-            collectionView: collectionView,
-            kind: kind,
-            indexPath: indexPath,
-            sectionItems: dataSource[indexPath.section].items
-          )
-        }
+        guard let `self` = self else { return collectionView.emptyView(for: indexPath, kind: kind) }
+        return self.articleSectionDelegate.supplementaryView(
+          collectionView: collectionView,
+          kind: kind,
+          indexPath: indexPath,
+          sectionReactor: dataSource[indexPath].sectionReactor,
+          sectionItem: dataSource[indexPath].sectionItem
+        )
       }
     )
   }
@@ -169,8 +135,10 @@ extension ArticleViewController: UICollectionViewDelegateFlexLayout {
     and nextIndexPath: IndexPath
   ) -> CGFloat {
     return self.articleSectionDelegate.cellVerticalSpacing(
-      sectionItem: self.dataSource[indexPath],
-      nextSectionItem: self.dataSource[nextIndexPath]
+      collectionView: collectionView,
+      layout: collectionViewLayout,
+      sectionItem: self.dataSource[indexPath].sectionItem,
+      nextSectionItem: self.dataSource[nextIndexPath].sectionItem
     )
   }
 
@@ -184,7 +152,7 @@ extension ArticleViewController: UICollectionViewDelegateFlexLayout {
       collectionView: collectionView,
       layout: collectionViewLayout,
       indexPath: indexPath,
-      sectionItem: self.dataSource[indexPath]
+      sectionItem: self.dataSource[indexPath].sectionItem
     )
   }
 
@@ -195,9 +163,10 @@ extension ArticleViewController: UICollectionViewDelegateFlexLayout {
     paddingForItemAt indexPath: IndexPath
   ) -> UIEdgeInsets {
     return self.articleSectionDelegate.cellPadding(
+      collectionView: collectionView,
       layout: collectionViewLayout,
       indexPath: indexPath,
-      sectionItem: self.dataSource[indexPath]
+      sectionItem: self.dataSource[indexPath].sectionItem
     )
   }
 
@@ -207,10 +176,11 @@ extension ArticleViewController: UICollectionViewDelegateFlexLayout {
     layout collectionViewLayout: UICollectionViewFlexLayout,
     sizeForItemAt indexPath: IndexPath
   ) -> CGSize {
-    let maxWidth = collectionViewLayout.maximumWidth(forItemAt: indexPath)
     return self.articleSectionDelegate.cellSize(
-      maxWidth: maxWidth,
-      sectionItem: self.dataSource[indexPath]
+      collectionView: collectionView,
+      layout: collectionViewLayout,
+      indexPath: indexPath,
+      sectionItem: self.dataSource[indexPath].sectionItem
     )
   }
 }

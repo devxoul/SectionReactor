@@ -16,7 +16,9 @@ extension ArticleViewSection: SectionModelType {
   var items: [ArticleViewSectionItem] {
     switch self {
     case let .article(sectionReactor):
-      return sectionReactor.currentState.sectionItems
+      return sectionReactor.currentState.sectionItems.map {
+        ArticleViewSectionItem(sectionReactor: sectionReactor, sectionItem: $0)
+      }
     }
   }
 
@@ -25,4 +27,7 @@ extension ArticleViewSection: SectionModelType {
   }
 }
 
-typealias ArticleViewSectionItem = ArticleSectionReactor.SectionItem
+struct ArticleViewSectionItem {
+  let sectionReactor: ArticleSectionReactor
+  let sectionItem: ArticleSectionReactor.SectionItem
+}

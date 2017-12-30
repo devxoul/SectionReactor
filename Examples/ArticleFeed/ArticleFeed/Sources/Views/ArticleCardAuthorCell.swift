@@ -27,15 +27,6 @@ final class ArticleCardAuthorCell: BaseArticleCardSectionItemCell, View {
   fileprivate enum Color {
   }
 
-  struct Dependency {
-    let presentArticleViewController: () -> Void
-  }
-
-
-  // MARK: Properties
-
-  var dependency: Dependency?
-
 
   // MARK: UI
 
@@ -74,12 +65,6 @@ final class ArticleCardAuthorCell: BaseArticleCardSectionItemCell, View {
     // View
     reactor.state.map { _ in }
       .bind(to: self.rx.setNeedsLayout)
-      .disposed(by: self.disposeBag)
-
-    self.rx.tap
-      .subscribe(onNext: { [weak self] in
-        self?.dependency?.presentArticleViewController()
-      })
       .disposed(by: self.disposeBag)
   }
 

@@ -20,18 +20,21 @@ import Then
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+  var dependency: AppDependency!
   var window: UIWindow?
 
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
   ) -> Bool {
-    let window = UIWindow(frame: UIScreen.main.bounds)
-    window.backgroundColor = .white
-    window.makeKeyAndVisible()
-    window.rootViewController = CompositionRoot.rootViewController()
+    self.dependency = self.dependency ?? AppDependency.resolve()
 
-    self.window = window
+    self.dependency.window.frame = UIScreen.main.bounds
+    self.dependency.window.backgroundColor = .white
+    self.dependency.window.makeKeyAndVisible()
+    self.dependency.window.rootViewController = self.dependency.rootViewController
+
+    self.window = self.dependency.window
     return true
   }
 }

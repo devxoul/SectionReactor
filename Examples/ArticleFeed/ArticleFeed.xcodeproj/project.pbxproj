@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0312544E1F639C3500953F94 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 031254261F639C3500953F94 /* Assets.xcassets */; };
 		0312544F1F639C3500953F94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 031254271F639C3500953F94 /* LaunchScreen.storyboard */; };
-		031254511F639C3500953F94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312542C1F639C3500953F94 /* AppDelegate.swift */; };
 		031254521F639C3500953F94 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312542E1F639C3500953F94 /* Comment.swift */; };
 		031254531F639C3500953F94 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312542F1F639C3500953F94 /* Article.swift */; };
 		031254541F639C3500953F94 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031254301F639C3500953F94 /* User.swift */; };
@@ -34,7 +33,8 @@
 		031254671F639C3500953F94 /* ArticleCardReactionCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031254491F639C3500953F94 /* ArticleCardReactionCellReactor.swift */; };
 		031254681F639C3500953F94 /* ArticleCardTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312544A1F639C3500953F94 /* ArticleCardTextCell.swift */; };
 		031254691F639C3500953F94 /* ArticleCardTextCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312544B1F639C3500953F94 /* ArticleCardTextCellReactor.swift */; };
-		0312546C1F639D8400953F94 /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0312546B1F639D8400953F94 /* CompositionRoot.swift */; };
+		034463311FF7E5D100F2159A /* AppDependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0344632F1FF7E5D100F2159A /* AppDependency.swift */; };
+		034463321FF7E5D100F2159A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034463301FF7E5D100F2159A /* AppDelegate.swift */; };
 		037E406F1F6450D70005A54E /* ArticleSectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037E406E1F6450D70005A54E /* ArticleSectionDelegate.swift */; };
 		03F482C91F678598008F0950 /* BorderedLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F482C81F678598008F0950 /* BorderedLayer.swift */; };
 		03F482CB1F678631008F0950 /* CollectionBorderedBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F482CA1F678631008F0950 /* CollectionBorderedBackgroundView.swift */; };
@@ -45,7 +45,6 @@
 		031253C91F639B1400953F94 /* ArticleFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArticleFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		031254261F639C3500953F94 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		031254281F639C3500953F94 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		0312542C1F639C3500953F94 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0312542E1F639C3500953F94 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		0312542F1F639C3500953F94 /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
 		031254301F639C3500953F94 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -71,7 +70,8 @@
 		0312544A1F639C3500953F94 /* ArticleCardTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCardTextCell.swift; sourceTree = "<group>"; };
 		0312544B1F639C3500953F94 /* ArticleCardTextCellReactor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleCardTextCellReactor.swift; sourceTree = "<group>"; };
 		0312544D1F639C3500953F94 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0312546B1F639D8400953F94 /* CompositionRoot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
+		0344632F1FF7E5D100F2159A /* AppDependency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDependency.swift; sourceTree = "<group>"; };
+		034463301FF7E5D100F2159A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		037E406E1F6450D70005A54E /* ArticleSectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleSectionDelegate.swift; sourceTree = "<group>"; };
 		03F482C81F678598008F0950 /* BorderedLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedLayer.swift; sourceTree = "<group>"; };
 		03F482CA1F678631008F0950 /* CollectionBorderedBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionBorderedBackgroundView.swift; sourceTree = "<group>"; };
@@ -132,8 +132,7 @@
 		0312542B1F639C3500953F94 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				0312542C1F639C3500953F94 /* AppDelegate.swift */,
-				0312546B1F639D8400953F94 /* CompositionRoot.swift */,
+				0344632E1FF7E5D100F2159A /* Entry */,
 				031254381F639C3500953F94 /* Services */,
 				0312542D1F639C3500953F94 /* Models */,
 				031254341F639C3500953F94 /* Sections */,
@@ -227,6 +226,15 @@
 				0312544D1F639C3500953F94 /* Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0344632E1FF7E5D100F2159A /* Entry */ = {
+			isa = PBXGroup;
+			children = (
+				0344632F1FF7E5D100F2159A /* AppDependency.swift */,
+				034463301FF7E5D100F2159A /* AppDelegate.swift */,
+			);
+			path = Entry;
 			sourceTree = "<group>";
 		};
 		8759F2C9DC0AF951B0CFBC60 /* Pods */ = {
@@ -371,6 +379,7 @@
 				"${BUILT_PRODUCTS_DIR}/SwiftyColor/SwiftyColor.framework",
 				"${BUILT_PRODUCTS_DIR}/Then/Then.framework",
 				"${BUILT_PRODUCTS_DIR}/UICollectionViewFlexLayout/UICollectionViewFlexLayout.framework",
+				"${BUILT_PRODUCTS_DIR}/URLNavigator/URLNavigator.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -389,6 +398,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyColor.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Then.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UICollectionViewFlexLayout.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/URLNavigator.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -406,16 +416,17 @@
 				031254601F639C3500953F94 /* ArticleViewReactor.swift in Sources */,
 				031254531F639C3500953F94 /* Article.swift in Sources */,
 				031254671F639C3500953F94 /* ArticleCardReactionCellReactor.swift in Sources */,
+				034463321FF7E5D100F2159A /* AppDelegate.swift in Sources */,
 				031254651F639C3500953F94 /* ArticleCardCommentCellReactor.swift in Sources */,
 				031254561F639C3500953F94 /* UIView+Rx.swift in Sources */,
 				03F482CB1F678631008F0950 /* CollectionBorderedBackgroundView.swift in Sources */,
 				031254551F639C3500953F94 /* UICollectionViewFlexLayout+Rx.swift in Sources */,
+				034463311FF7E5D100F2159A /* AppDependency.swift in Sources */,
 				031254571F639C3500953F94 /* FeedViewSection.swift in Sources */,
 				0312545A1F639C3500953F94 /* ArticleService.swift in Sources */,
 				031254611F639C3500953F94 /* BaseArticleCardSectionItemCell.swift in Sources */,
 				031254621F639C3500953F94 /* ArticleCardAuthorCell.swift in Sources */,
 				031254661F639C3500953F94 /* ArticleCardReactionCell.swift in Sources */,
-				031254511F639C3500953F94 /* AppDelegate.swift in Sources */,
 				031254581F639C3500953F94 /* ArticleSectionReactor.swift in Sources */,
 				03F482C91F678598008F0950 /* BorderedLayer.swift in Sources */,
 				031254641F639C3500953F94 /* ArticleCardCommentCell.swift in Sources */,
@@ -428,7 +439,6 @@
 				031254691F639C3500953F94 /* ArticleCardTextCellReactor.swift in Sources */,
 				0312545D1F639C3500953F94 /* ArticleListViewController.swift in Sources */,
 				031254681F639C3500953F94 /* ArticleCardTextCell.swift in Sources */,
-				0312546C1F639D8400953F94 /* CompositionRoot.swift in Sources */,
 				037E406F1F6450D70005A54E /* ArticleSectionDelegate.swift in Sources */,
 				031254521F639C3500953F94 /* Comment.swift in Sources */,
 			);

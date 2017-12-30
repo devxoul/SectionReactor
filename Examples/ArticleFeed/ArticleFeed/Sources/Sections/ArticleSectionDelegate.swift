@@ -9,6 +9,7 @@
 import ReusableKit
 import SectionReactor
 import UICollectionViewFlexLayout
+import URLNavigator
 
 final class ArticleSectionDelegate: SectionDelegateType {
   typealias SectionReactor = ArticleSectionReactor
@@ -20,6 +21,20 @@ final class ArticleSectionDelegate: SectionDelegateType {
     static let commentCell = ReusableCell<ArticleCardCommentCell>()
     static let sectionBackgroundView = ReusableView<CollectionBorderedBackgroundView>()
     static let itemBackgroundView = ReusableView<CollectionBorderedBackgroundView>()
+  }
+
+  private let navigator: NavigatorType
+  private let articleViewControllerFactory: (Article) -> ArticleViewController
+  private let presentsArticleViewControllerWhenTaps: Bool
+
+  init(
+    navigator: NavigatorType,
+    articleViewControllerFactory: @escaping (Article) -> ArticleViewController,
+    presentsArticleViewControllerWhenTaps: Bool
+  ) {
+    self.navigator = navigator
+    self.articleViewControllerFactory = articleViewControllerFactory
+    self.presentsArticleViewControllerWhenTaps = presentsArticleViewControllerWhenTaps
   }
 
   func registerReusables(to collectionView: UICollectionView) {
@@ -34,42 +49,49 @@ final class ArticleSectionDelegate: SectionDelegateType {
   func cell(
     collectionView: UICollectionView,
     indexPath: IndexPath,
-    sectionItem: SectionItem,
-    articleCardAuthorCellDependency: ArticleCardAuthorCell.Dependency,
-    articleCardTextCellDependency: ArticleCardTextCell.Dependency,
-    articleCardReactionCellDependency: ArticleCardReactionCell.Dependency
+    sectionReactor: SectionReactor,
+    sectionItem: SectionItem
   ) -> UICollectionViewCell {
     switch sectionItem {
     case let .author(cellReactor):
       let cell = collectionView.dequeue(Reusable.authorCell, for: indexPath)
-      cell.dependency = articleCardAuthorCellDependency
-      cell.reactor = cellReactor
+      if cell.reactor !== cellReactor {
+        cell.reactor = cellReactor
+        self.subscribeTapToPresentArticleViewController(cell: cell, sectionReactor: sectionReactor)
+      }
       return cell
 
     case let .text(cellReactor):
       let cell = collectionView.dequeue(Reusable.textCell, for: indexPath)
-      cell.dependency = articleCardTextCellDependency
-      cell.reactor = cellReactor
+      if cell.reactor !== cellReactor {
+        cell.reactor = cellReactor
+        self.subscribeTapToPresentArticleViewController(cell: cell, sectionReactor: sectionReactor)
+      }
       return cell
 
     case let .reaction(cellReactor):
       let cell = collectionView.dequeue(Reusable.reactionCell, for: indexPath)
-      cell.dependency = articleCardReactionCellDependency
-      cell.reactor = cellReactor
+      if cell.reactor !== cellReactor {
+        cell.reactor = cellReactor
+        self.subscribeTapToPresentArticleViewController(cell: cell, sectionReactor: sectionReactor)
+      }
       return cell
 
     case let .comment(cellReactor):
       let cell = collectionView.dequeue(Reusable.commentCell, for: indexPath)
-      cell.reactor = cellReactor
+      if cell.reactor !== cellReactor {
+        cell.reactor = cellReactor
+      }
       return cell
     }
   }
 
-  func background(
+  func supplementaryView(
     collectionView: UICollectionView,
     kind: String,
     indexPath: IndexPath,
-    sectionItems: [SectionItem]
+    sectionReactor: SectionReactor,
+    sectionItem: SectionItem
   ) -> UICollectionReusableView {
     switch kind {
     case UICollectionElementKindSectionBackground:
@@ -79,40 +101,50 @@ final class ArticleSectionDelegate: SectionDelegateType {
       return view
 
     case UICollectionElementKindItemBackground:
-      let view = collectionView.dequeue(Reusable.itemBackgroundView, kind: kind, for: indexPath)
-      switch sectionItems[indexPath.item] {
+      switch sectionItem {
       case .comment:
+        let view = collectionView.dequeue(Reusable.itemBackgroundView, kind: kind, for: indexPath)
         view.backgroundColor = 0xFAFAFA.color
-        if self.isFirstComment(indexPath, in: sectionItems) {
+        if self.isFirstComment(indexPath, in: sectionReactor.currentState.sectionItems) {
           view.borderedLayer?.borders = [.top]
         } else if self.isLast(indexPath, in: collectionView) {
           view.borderedLayer?.borders = [.bottom]
         } else {
           view.borderedLayer?.borders = []
         }
+        return view
 
       default:
+        let view = collectionView.dequeue(Reusable.itemBackgroundView, kind: kind, for: indexPath)
         view.backgroundColor = .white
         view.borderedLayer?.borders = []
+        return view
       }
-      return view
 
     default:
       return collectionView.emptyView(for: indexPath, kind: kind)
     }
   }
 
-  func cellVerticalSpacing(
-    sectionItem: SectionItem,
-    nextSectionItem: SectionItem
-  ) -> CGFloat {
-    switch (sectionItem, nextSectionItem) {
-    case (.comment, .comment): return 0
-    case (_, .comment): return 15
-    case (.author, _): return 10
-    case (.text, _): return 10
-    case (.reaction, _): return 10
-    case (.comment, _): return 10
+  func cellSize(
+    collectionView: UICollectionView,
+    layout: UICollectionViewFlexLayout,
+    indexPath: IndexPath,
+    sectionItem: SectionItem
+  ) -> CGSize {
+    let maxWidth = layout.maximumWidth(forItemAt: indexPath)
+    switch sectionItem {
+    case let .author(cellReactor):
+      return Reusable.authorCell.class.size(width: maxWidth, reactor: cellReactor)
+
+    case let .text(cellReactor):
+      return Reusable.textCell.class.size(width: maxWidth, reactor: cellReactor)
+
+    case let .reaction(cellReactor):
+      return Reusable.reactionCell.class.size(width: maxWidth, reactor: cellReactor)
+
+    case let .comment(cellReactor):
+      return Reusable.commentCell.class.size(width: maxWidth, reactor: cellReactor)
     }
   }
 
@@ -139,6 +171,7 @@ final class ArticleSectionDelegate: SectionDelegateType {
   }
 
   func cellPadding(
+    collectionView: UICollectionView,
     layout: UICollectionViewFlexLayout,
     indexPath: IndexPath,
     sectionItem: SectionItem
@@ -158,24 +191,39 @@ final class ArticleSectionDelegate: SectionDelegateType {
     }
   }
 
-  func cellSize(maxWidth: CGFloat, sectionItem: SectionItem) -> CGSize {
-    switch sectionItem {
-    case let .author(cellReactor):
-      return Reusable.authorCell.class.size(width: maxWidth, reactor: cellReactor)
-
-    case let .text(cellReactor):
-      return Reusable.textCell.class.size(width: maxWidth, reactor: cellReactor)
-
-    case let .reaction(cellReactor):
-      return Reusable.reactionCell.class.size(width: maxWidth, reactor: cellReactor)
-
-    case let .comment(cellReactor):
-      return Reusable.commentCell.class.size(width: maxWidth, reactor: cellReactor)
+  func cellVerticalSpacing(
+    collectionView: UICollectionView,
+    layout: UICollectionViewFlexLayout,
+    sectionItem: SectionItem,
+    nextSectionItem: SectionItem
+  ) -> CGFloat {
+    switch (sectionItem, nextSectionItem) {
+    case (.comment, .comment): return 0
+    case (_, .comment): return 15
+    case (.author, _): return 10
+    case (.text, _): return 10
+    case (.reaction, _): return 10
+    case (.comment, _): return 10
     }
   }
 
 
   // MARK: Utils
+
+  private func subscribeTapToPresentArticleViewController(
+    cell: BaseArticleCardSectionItemCell,
+    sectionReactor: SectionReactor
+  ) {
+    guard self.presentsArticleViewControllerWhenTaps else { return }
+    cell.rx.tap
+      .subscribe(onNext: { [weak self, weak sectionReactor] in
+        guard let `self` = self else { return }
+        guard let article = sectionReactor?.currentState.article else { return }
+        let articleViewController = self.articleViewControllerFactory(article)
+        self.navigator.push(articleViewController)
+      })
+      .disposed(by: cell.disposeBag)
+  }
 
   private func isFirstComment(_ indexPath: IndexPath, in sectionItems: [SectionItem]) -> Bool {
     let prevItemIndex = indexPath.item - 1

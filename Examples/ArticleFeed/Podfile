@@ -23,4 +23,5 @@ target 'ArticleFeed' do
   pod 'CGFloatLiteral'
   pod 'SwiftyColor'
   pod 'LoremIpsum'
+  pod 'URLNavigator'
 end

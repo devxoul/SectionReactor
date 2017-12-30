@@ -16,7 +16,7 @@ extension ArticleListViewSection: SectionModelType {
   var items: [ArticleListViewSectionItem] {
     switch self {
     case let .article(sectionReactor):
-      return sectionReactor.currentState.sectionItems.map(ArticleListViewSectionItem.articleCard)
+      return sectionReactor.currentState.sectionItems.map { ArticleListViewSectionItem.articleCard(sectionReactor, $0) }
     }
   }
 
@@ -28,7 +28,7 @@ extension ArticleListViewSection: SectionModelType {
 extension ArticleListViewSection {
   var articleCardSectionItems: [ArticleSectionReactor.SectionItem] {
     return self.items.flatMap { sectionItem in
-      if case let .articleCard(item) = sectionItem {
+      if case let .articleCard(_, item) = sectionItem {
         return item
       } else {
         return nil
@@ -38,5 +38,5 @@ extension ArticleListViewSection {
 }
 
 enum ArticleListViewSectionItem {
-  case articleCard(ArticleSectionReactor.SectionItem)
+  case articleCard(ArticleSectionReactor, ArticleSectionReactor.SectionItem)
 }
