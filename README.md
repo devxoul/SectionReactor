@@ -1,6 +1,6 @@
 # SectionReactor
 
-![Swift](https://img.shields.io/badge/Swift-4.0-orange.svg)
+![Swift](https://img.shields.io/badge/Swift-5.0-orange.svg)
 [![CocoaPods](http://img.shields.io/cocoapods/v/SectionReactor.svg)](https://cocoapods.org/pods/SectionReactor)
 [![Build Status](https://travis-ci.org/devxoul/SectionReactor.svg?branch=master)](https://travis-ci.org/devxoul/SectionReactor)
 [![Codecov](https://img.shields.io/codecov/c/github/devxoul/SectionReactor.svg)](https://codecov.io/gh/devxoul/SectionReactor)
