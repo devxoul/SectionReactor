@@ -61,8 +61,8 @@ final class SectionReactorTests: XCTestCase {
 
     // when
     test.input(sectionReactor.action, [
-      next(100, .append),
-      next(200, .append),
+      .next(100, .append),
+      .next(200, .append),
     ])
 
     // then
@@ -83,12 +83,12 @@ final class SectionReactorTests: XCTestCase {
 
     // when
     test.input(sectionReactors[0].action, [
-      next(100, .append),
+      .next(100, .append),
     ])
     test.input(sectionReactors[1].action, [
-      next(100, .append),
-      next(200, .append),
-      next(300, .append),
+      .next(100, .append),
+      .next(200, .append),
+      .next(300, .append),
     ])
 
     // then
